@@ -19,14 +19,13 @@
     <div id="map"></div>
     <div class="button-container">
         <form id="upload-form" enctype="multipart/form-data">
-            <input type="file" name="file" accept=".shp" required />
-            <button type="submit">Upload Shapefile</button>
+            <input type="file" name="file" accept=".geojson" required />
+            <button type="submit">Upload GeoJSON</button>
         </form>
     </div>
 
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script src="https://unpkg.com/esri-leaflet@2.5.3/dist/esri-leaflet.js"></script>
-    <script src="https://unpkg.com/shapefile@3"></script>
 
     <script>
         // Initialize the map
@@ -48,19 +47,15 @@
             var fileInput = document.querySelector('input[type="file"]');
             var file = fileInput.files[0];
 
-            // Read the file in the browser using Shapefile JS
-            shapefile.open(file)
-                .then(source => source.read()
-                    .then(function log(result) {
-                        if (result.done) return;
-                        
-                        // Add the feature to the map
-                        L.geoJSON(result.value).addTo(map);
-                        
-                        return source.read().then(log);
-                    })
-                )
-                .catch(error => console.error('Error:', error));
+            // Read the file in the browser using FileReader
+            var reader = new FileReader();
+            reader.onload = function() {
+                var geojson = JSON.parse(reader.result);
+                
+                // Add the feature to the map
+                L.geoJSON(geojson).addTo(map);
+            };
+            reader.readAsText(file);
 
             // Upload the file to the server
             fetch('/upload', {
