@@ -28,8 +28,6 @@
 
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script src="https://unpkg.com/esri-leaflet@2.5.3/dist/esri-leaflet.js"></script>
-    <script src="https://unpkg.com/terraformer@1.0.8"></script>
-    <script src="https://unpkg.com/terraformer-arcgis-parser@1.0.6"></script>
 
     <script>
         // Initialize the map
@@ -47,22 +45,49 @@
 
         var geojson;
 
-     document.getElementById('add-layer').addEventListener('click', function() {
-    // Send the GeoJSON data to the server
-    fetch('/add-layer', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(geojson)
-    })
-    .then(response => response.json())
-    .then(data => {
-        alert(data.message || data.error);
-    })
-    .catch(error => console.error('Error:', error));
-});
+        document.getElementById('upload-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            var formData = new FormData(this);
+            var fileInput = document.querySelector('input[type="file"]');
+            var file = fileInput.files[0];
 
+            // Read the file in the browser using FileReader
+            var reader = new FileReader();
+            reader.onload = function() {
+                geojson = JSON.parse(reader.result);
+                
+                // Add the feature to the map
+                L.geoJSON(geojson).addTo(map);
+            };
+            reader.readAsText(file);
+
+            // Upload the file to the server
+            fetch('/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message || data.error);
+            })
+            .catch(error => console.error('Error:', error));
+        });
+
+        document.getElementById('add-layer').addEventListener('click', function() {
+            // Send the GeoJSON data to the server
+            fetch('/add-layer', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(geojson)
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message || data.error);
+            })
+            .catch(error => console.error('Error:', error));
+        });
     </script>
 </body>
 </html>
