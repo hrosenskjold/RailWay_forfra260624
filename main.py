@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, jsonify
 import requests
 from arcgis.geometry import Geometry
 from arcgis.features import Feature
+import json  # Add this line
 
 app = Flask(__name__)
 
