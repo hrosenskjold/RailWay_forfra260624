@@ -29,7 +29,7 @@ def upload_file():
 def convert_geojson_to_arcgis_json(geojson):
     # Convert GeoJSON to ArcGIS JSON
     arcgis_feature = Feature(geometry=Geometry(geojson))
-    arcgis_json = arcgis_feature.as_dict()
+    arcgis_json = arcgis_feature.as_dict  # Fjern parenteserne
 
     return arcgis_json
 
