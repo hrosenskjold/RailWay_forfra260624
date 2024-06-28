@@ -4,4 +4,4 @@ gunicorn
 pyshp==2.1.3
 requests
 geopandas
-arcgis2geojson==1.0.0
+arcgis2geojson 3.0.2
