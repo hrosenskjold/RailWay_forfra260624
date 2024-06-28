@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, jsonify
 import requests
+import arcgisbinding
 
 app = Flask(__name__)
 
@@ -25,10 +26,8 @@ def upload_file():
         return jsonify(error='Failed to add layer to ArcGIS Feature Service'), 500
 
 def convert_geojson_to_arcgis_json(geojson):
-    import arcgis2geojson
-
     # Convert GeoJSON to ArcGIS JSON
-    arcgis_json = arcgis2geojson.geojson2arcgis(geojson)
+    arcgis_json = arcgisbinding.arc.write(geojson)
 
     return arcgis_json
 
