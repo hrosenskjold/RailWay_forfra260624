@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, jsonify
 import requests
-import arcgisbinding
+from arcgis.geometry import Geometry
+from arcgis.features import Feature
 
 app = Flask(__name__)
 
@@ -27,7 +28,8 @@ def upload_file():
 
 def convert_geojson_to_arcgis_json(geojson):
     # Convert GeoJSON to ArcGIS JSON
-    arcgis_json = arcgisbinding.arc.write(geojson)
+    arcgis_feature = Feature(geometry=Geometry(geojson))
+    arcgis_json = arcgis_feature.as_dict()
 
     return arcgis_json
 
