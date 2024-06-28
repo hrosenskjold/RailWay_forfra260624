@@ -5,4 +5,4 @@ pyshp==2.1.3
 requests
 geopandas
 arcgis2geojson
-arcgis 2.2.0.4
+arcgis 2.1
