@@ -73,9 +73,9 @@
             .catch(error => console.error('Error:', error));
         });
 
-        document.getElementById('add-layer').addEventListener('click', function() {
-            // Send the GeoJSON data to the server
-            fetch('/add-layer', {
+         document.getElementById('add-layer').addEventListener('click', function() {
+            // Send the GeoJSON data to the ArcGIS Feature Service
+            fetch('https://services6.arcgis.com/QHir1urgnGYroCLG/ArcGIS/rest/services/PG_versioneret_110624/FeatureServer/0/addFeatures', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
