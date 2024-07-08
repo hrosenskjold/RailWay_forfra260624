@@ -13,6 +13,8 @@ def index():
 @app.route('/upload', methods=['POST'])
 def upload_file():
     geojson = request.get_json()
+    if not geojson:
+        return jsonify(error='No GeoJSON data provided'), 400
 
     # Convert GeoJSON to ArcGIS JSON
     arcgis_json = convert_geojson_to_arcgis_json(geojson)
