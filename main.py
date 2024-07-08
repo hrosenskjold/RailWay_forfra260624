@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, jsonify
 import requests
 from arcgis.geometry import Geometry
 from arcgis.features import Feature
-import json  # Add this line
+import json
 
 app = Flask(__name__)
 
@@ -17,10 +17,8 @@ def upload_file():
     # Convert GeoJSON to ArcGIS JSON
     arcgis_json = convert_geojson_to_arcgis_json(geojson)
 
-    # Add the GeoJSON layer to the ArcGIS Feature Service
-    response = requests.post('https://services6.arcgis.com/QHir1urgnGYroCLG/arcgis/rest/services/PG_versioneret_110624/FeatureServer/0/addFeatures', {
-        'features': json.dumps(arcgis_json)
-    })
+    # Use proxy to add the GeoJSON layer to the ArcGIS Feature Service
+    response = proxy_request(arcgis_json)
 
     if response.status_code == 200:
         return jsonify(message='Layer successfully added'), 200
@@ -33,6 +31,13 @@ def convert_geojson_to_arcgis_json(geojson):
     arcgis_json = arcgis_feature.as_dict  # Fjern parenteserne
 
     return arcgis_json
+
+def proxy_request(arcgis_json):
+    url = 'https://services6.arcgis.com/QHir1urgnGYroCLG/arcgis/rest/services/PG_versioneret_110624/FeatureServer/0/addFeatures'
+    headers = {'Content-Type': 'application/json'}
+    data = {'features': [arcgis_json]}
+    response = requests.post(url, headers=headers, json=data)
+    return response
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080)
